@@ -1,17 +1,33 @@
 import chalk from "chalk";
 import { existsSync } from "fs";
-import { cp, mkdir } from "fs/promises";
+import { cp, mkdir, rm } from "fs/promises";
 import glob from "glob";
-import { basename, isAbsolute, join } from "path";
+import { basename, join } from "path";
 import { get_ignore_patterns } from "../functions/filter-files.js";
+import { getDefaults } from "../functions/handle-confs.js";
 
 const CWD = process.cwd();
-const DEST = "D:\\medostudios_predeploy\\sogesoft";
-const override_ignore = null;
 
-async function transfer() {
+async function transfer(dest = null, options) {
   try {
-    // TODO: Check the file
+    const override_ignore = options.ignore ?? null;
+
+    const clearDest = options.clearDest ?? false;
+
+    if (dest == null) {
+      dest = await getDefaults("destination");
+      if (dest == null) throw new Error("Not destination is set!");
+    }
+
+    const folderName = basename(CWD);
+    const destination = join(dest, folderName);
+
+    if (clearDest && existsSync(destination)) {
+      await rm(destination, {
+        recursive: true,
+      });
+    }
+
     const pattern = await get_ignore_patterns(override_ignore);
     glob(
       "**/*",
@@ -22,13 +38,10 @@ async function transfer() {
       },
       async (err, files) => {
         if (err) throw new Error(err);
-        // TODO: Create a directory in the destination if not exiting
-        const folderName = basename(CWD);
-        const destination = join(DEST, folderName);
-        if (existsSync(destination)) {
-          await mkdir(destination);
+
+        if (!existsSync(destination)) {
+          await mkdir(destination, { recursive: true });
         }
-        // TODO: Loop through all directory's files
 
         files.forEach(async (file) => {
           await cp(join(CWD, file), join(destination, file), {

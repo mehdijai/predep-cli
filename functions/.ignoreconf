@@ -1,6 +1,6 @@
-*.scss
-*.ts
-*.json
+**/*.css
+**/*.ts
+**/*.json
 .gitignore
 .git
 .vscode
