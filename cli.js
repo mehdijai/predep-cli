@@ -3,7 +3,6 @@
 import chalk from "chalk";
 import { program } from "commander";
 import { transfer } from "./commands/transfer.js";
-import deploy from "./commands/deploy.js";
 import config from "./config.js";
 import { save_dest, save_ignore } from "./commands/conf-dest.js";
 
@@ -13,8 +12,8 @@ try {
   program
     .command("transfer")
     .argument("[dest]", "Destination path")
-    .option("--ignore <path>", "Path to ignore file.")
-    .option("--clear-dest", "Remove if exists the destination directory")
+    .option("--ignore <path>", "Paths to ignore file.")
+    .option("--clear-dest", "Remove if exists the destination directorypreset")
     .description(
       "Transfer file to pre-deploy folder. if dest not set, it will lock for the saved path. If not found, an error will be thrown",
     )
@@ -33,8 +32,6 @@ try {
     .option("--unset", "unset the default value. if set, saving the path process will be aborted.")
     .description("Save a default ignore file path")
     .action(save_ignore);
-
-  program.command("deploy").description("Deploy to the remote server through sftp").action(deploy);
 
   program.version(
     chalk.bgYellowBright.black.bold(" v" + version + " "),

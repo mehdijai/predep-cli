@@ -8,13 +8,41 @@ Pre-deployment CLI, is software that help you transfer you files from working di
 Transfer the files, ignoring the mentioned patters.
 
 ```shell
-predep-cli transfer <destination> [ignorePatterns]
+predep-cli transfer <destination> [options]
 ```
 
-`<destination>`: Destination directory. if not set, it will transfer the current directory (CWD|CD).
+`<destination>`: Destination directory. if not set, it will check if preset is saved.
 
-`[ignorePatterns]`: (optional) the path to Ignore Patterns file, to override the default one.
+### Options
 
-## - Deploy
+`--ignore <path>`: Path of the ignore file.
+`--clear-dest`: Remove if exists the destination directory preset.
 
-> NOT YET DEVELOPED
+## Save Preset
+
+Save destination preset. The preset will be used if `transfer <destination>` is not set.
+
+```shell
+predep-cli save-dest <path> [options]
+```
+
+`path`: The default path to save. If not set, it will save the current directory. However, if `--unset` flag is set, it won't have any effect.
+
+### Options
+
+`--unset`: if the flag is set. The preset will be cleared. This flag has higher priority. Meaning, if it's set, it will ignore saving the path.
+
+## - Save ignore
+
+ignrore file is `.gitignore`-like file. You can attach the file's link with `transfer` command. or, save it as a preset.
+
+```shell
+predep-cli save-ignore <path> [options]
+```
+
+`path`: The default path to save. if `--unset` flag is set, it won't have any effect.
+
+### Options
+
+`--unset`: if the flag is set. The ignore preset will be cleared. This flag has higher priority. Meaning, if it's set, it will ignore saving the path.
+
